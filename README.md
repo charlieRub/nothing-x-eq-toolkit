@@ -2,19 +2,47 @@
   <img src="assets/banner-v2.png" alt="Nothing X EQ Toolkit Banner" width="100%">
   <br/>
   <h1>Nothing Ear EQ QR Profiles</h1>
-  <p>Generate importable Nothing X advanced EQ QR codes for Nothing Ear devices.</p>
+  <p>An <b>Agent-First</b> toolkit to generate custom Nothing X advanced EQ QR codes for Nothing Ear devices.</p>
 </div>
 
-This repository contains:
+## 🤖 Agent-First Workflow
 
-- a reproducible Node.js generator for Nothing X QR payloads;
-- an expert profile designer that combines device tuning, genre rules, and user taste;
-- AutoEq-lite support for selected Nothing measurements;
-- validated EQ presets for reggaeton, pop, video/dialogue, and piano/acoustic music;
-- technical compatibility rules for Nothing X import;
-- an agent skill that teaches Codex-style agents how to design new profiles from a genre and user taste.
+This repository is designed to be operated by **AI Agents** (like Cursor, GitHub Copilot, ChatGPT, or Claude). You don't need to write code, configure Node.js, or run manual scripts. Simply provide this repository to your AI assistant and tell it what you want.
 
-## Quick Start
+The repo includes a built-in skill (`skills/nothing-ear-eq-expert/SKILL.md`) that teaches your AI how to act as your personal audio engineer. It combines hardware tuning, genre rules, and your personal taste to generate an importable QR code.
+
+### How to use it
+
+1. **Open** this repository in an Agent-enabled IDE (like Cursor) or upload the files to your AI chat.
+2. **Prompt the Agent** with your audio preferences (headphones model, genre, bass/treble preferences, etc.).
+3. **Scan** the generated QR code with your Nothing X app.
+
+### Example Prompt
+
+Try pasting this prompt to your AI Agent:
+
+> *"Diseña un perfil de ecualización para mis auriculares Nothing Ear (a). Escucho principalmente Reggaeton en el gimnasio y me gustan los bajos contundentes (club bass), pero que la voz siga siendo clara. Genera el código QR para importarlo."*
+
+### Example Output
+
+Once the agent generates the profile, it will provide the EQ settings and a QR code ready to be imported into the Nothing X App:
+
+<div align="center">
+  <img src="qr/reggaeton-base-protagonista.png" alt="Reggaeton Example EQ Profile" width="300">
+</div>
+
+---
+
+## 🛠️ Developer & Manual Usage
+
+If you prefer to run the tools manually without an AI agent, this repository contains:
+
+- A reproducible Node.js generator for Nothing X QR payloads
+- An expert profile designer that combines device tuning, genre rules, and user taste
+- AutoEq-lite support for selected Nothing measurements
+- Validated EQ presets
+
+### Quick Start
 
 ```powershell
 npm install
@@ -23,23 +51,11 @@ npm run validate
 npm run generate
 ```
 
-Generated QR codes are written to:
+Generated QR codes are written to the `qr/` folder. Use the clean PNG files from that folder to import profiles in the Nothing X app.
 
-```text
-qr/
-```
+### Expert Designer
 
-Use the clean PNG files from that folder to import profiles in the Nothing X app.
-
-### Example Profile
-
-<div align="center">
-  <img src="qr/reggaeton-base-protagonista.png" alt="Reggaeton Example EQ Profile" width="300">
-</div>
-
-## Expert Designer
-
-Generate a new profile from hardware, genre and taste:
+Generate a new profile from hardware, genre and taste manually:
 
 ```powershell
 npm run design -- --device=nothing-ear-2024 --genre=reggaeton --context=gym --target=club-bass --bass=1 --vocal=1 --treble=0 --energy=1 --name="Reggaeton Expert"
@@ -57,15 +73,7 @@ Generate the acceptance examples for the agent workflow:
 npm run design:examples
 ```
 
-Designed profiles are written to `output/designed/` by default. The designer uses:
-
-- `devices/*.json` for Nothing Ear hardware compensation;
-- `autoeq-sources/manifest.json` and `autoeq-sources/data/` for selected AutoEq Nothing measurements;
-- `targets/*.json` for tonal targets such as natural, vocal clarity and club bass;
-- `profiles/genre-rules/*.json` for genre-specific tuning;
-- `src/profile-designer.js` to combine hardware, style and preferences safely.
-
-## Current Presets
+## 🎧 Current Presets
 
 The recommended profiles live in [presets/default-profiles.json](presets/default-profiles.json):
 
@@ -78,13 +86,12 @@ The recommended profiles live in [presets/default-profiles.json](presets/default
 - `Piano Natural`
 
 Each preset includes:
-
 - profile name shown in Nothing X;
 - listening intent;
 - Bass Enhance recommendation;
 - 8 parametric EQ bands: frequency, Q, gain.
 
-## Repository Structure
+## 📁 Repository Structure
 
 ```text
 src/
@@ -119,22 +126,7 @@ skills/
 qr/                            Clean generated QRs ready for Nothing X
 ```
 
-## Generate a Custom Profile
-
-Copy the example preset:
-
-```powershell
-Copy-Item presets\example-custom-profile.json presets\my-profile.json
-```
-
-Edit `presets\my-profile.json`, then run:
-
-```powershell
-node scripts/validate-profiles.js --presets=presets/my-profile.json
-node scripts/generate-qrs.js --presets=presets/my-profile.json --out=output/my-profile
-```
-
-## Nothing X Compatibility Rules
+## ⚙️ Nothing X Compatibility Rules
 
 Nothing X can reject a QR even if a generic QR scanner reads it. The most important rule is that each band must stay inside its original frequency range:
 
@@ -150,27 +142,9 @@ Nothing X can reject a QR even if a generic QR scanner reads it. The most import
 | 8 | 12000-20000 Hz |
 
 The validator enforces this. Do not bypass validation.
-
 More detail: [docs/nothing-x-format.md](docs/nothing-x-format.md).
 
-## For Agents
-
-When an agent is asked to create a profile for a genre, artist, or taste:
-
-1. Read [skills/nothing-ear-eq-expert/SKILL.md](skills/nothing-ear-eq-expert/SKILL.md).
-2. Read the referenced files:
-   - [skills/nothing-ear-eq-expert/references/nothing-x-qr-rules.md](skills/nothing-ear-eq-expert/references/nothing-x-qr-rules.md)
-   - [skills/nothing-ear-eq-expert/references/profile-design-guide.md](skills/nothing-ear-eq-expert/references/profile-design-guide.md)
-3. Design the profile as an audio engineer.
-4. Prefer `src/profile-designer.js` / `npm run design` for new optimized profiles.
-5. Keep every frequency in its band range.
-6. Run validation and generation.
-7. Return QR, final table, Bass Enhance, AutoEq source, target, confidence and risk report.
-8. Show the generated PNG if the user wants mobile import.
-
-Agent-specific workflow: [docs/agent-guide.md](docs/agent-guide.md).
-
-## QR Payload
+## 📡 QR Payload
 
 The QR encodes a Base64 string. The Base64 string is a gzip-compressed binary payload:
 
