@@ -86,7 +86,7 @@ npm run design:examples
 
 ## Supported Genres
 
-The expert designer includes calibrated tuning rules for 14 musical genres and use cases:
+The expert designer includes calibrated tuning rules for 16 musical genres and use cases:
 
 | Genre | ID | Sonic Focus |
 |---|---|---|
@@ -94,6 +94,8 @@ The expert designer includes calibrated tuning rules for 14 musical genres and u
 | Pop Vocal | `pop` | Forward vocal, clean chorus lift, bright but controlled |
 | Hip Hop | `hip-hop` | Sub and 808 weight with vocal articulation |
 | Electronic / EDM | `electronic-club` | Deep sub, clean kick, energetic presence |
+| House | `house` | Punchy 4-to-the-floor kick, warm bassline, clear claps |
+| Hardstyle | `hardstyle` | Distorted kick impact, aggressive screech synth, tight tail |
 | Rock | `rock` | Guitar presence, snare attack, vocal cut |
 | Metal / Heavy | `metal` | Defined double kick, guitar bite, controlled cymbals |
 | R&B / Soul | `r-and-b` | Warm sub, rich low-mids, silky vocal presence |

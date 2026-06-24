@@ -25,7 +25,7 @@ When a user requests a profile in natural language, use the Auto-Designer:
 npm run design:auto -- --device=nothing-ear-2024 --prompt="quiero perreo intenso para el gimnasio pero con voces claras" --json
 ```
 
-The NLP wrapper (`scripts/design-auto.js` -> `src/prompt-parser.js`) will parse the intent, map it to the 14 internal genres, set the preference deltas, and run the expert designer engine.
+The NLP wrapper (`scripts/design-auto.js` -> `src/prompt-parser.js`) will parse the intent, map it to the 16 internal genres, set the preference deltas, and run the expert designer engine.
 
 ## Explicit Expert designer flow
 

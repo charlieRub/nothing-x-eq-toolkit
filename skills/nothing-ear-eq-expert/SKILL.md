@@ -34,7 +34,7 @@ npm run design -- --device=<device> --genre=<genre> --context=<context> --bass=<
 - `generic-nothing-x` (Low confidence fallback)
 
 ### Available Genres
-`reggaeton`, `pop`, `hip-hop`, `electronic-club`, `rock`, `metal`, `r-and-b`, `latin-pop`, `kpop`, `jazz`, `flamenco`, `lofi-chill`, `piano-acoustic`, `video-voice`.
+`reggaeton`, `pop`, `hip-hop`, `electronic-club`, `house`, `hardstyle`, `rock`, `metal`, `r-and-b`, `latin-pop`, `kpop`, `jazz`, `flamenco`, `lofi-chill`, `piano-acoustic`, `video-voice`.
 
 ### Available Contexts
 `general`, `home`, `noisy` (boosts sub/presence), `low-volume` (Fletcher-Munson compensation), `high-energy`.

@@ -20,8 +20,8 @@ If you prefer full control, use the explicit designer:
 npm run design -- --device=<device-id> --genre=<genre-id-or-alias> --context=<context> --target=<target-or-auto> --bass=<level> --vocal=<level> --treble=<level> --energy=<level> --warmth=<level> --name="<short name>" --json
 ```
 
-### Available Genres (14)
-`reggaeton`, `pop`, `hip-hop`, `electronic-club`, `rock`, `metal`, `r-and-b`, `latin-pop`, `kpop`, `jazz`, `flamenco`, `lofi-chill`, `piano-acoustic`, `video-voice`.
+### Available Genres (16)
+`reggaeton`, `pop`, `hip-hop`, `electronic-club`, `house`, `hardstyle`, `rock`, `metal`, `r-and-b`, `latin-pop`, `kpop`, `jazz`, `flamenco`, `lofi-chill`, `piano-acoustic`, `video-voice`.
 
 ### Available Devices (6)
 - `nothing-ear-2024` (High confidence, AutoEQ B&K 5128)

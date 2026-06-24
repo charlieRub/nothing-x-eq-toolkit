@@ -119,7 +119,7 @@ test('Original genres generate valid profiles', async (t) => {
 // ── New Genre Profile Tests ──
 
 test('New genres generate valid profiles across all devices', async (t) => {
-  const newGenres = ['r-and-b', 'latin-pop', 'jazz', 'metal', 'lofi-chill', 'kpop', 'flamenco'];
+  const newGenres = ['r-and-b', 'latin-pop', 'jazz', 'metal', 'lofi-chill', 'kpop', 'flamenco', 'house', 'hardstyle'];
   const devices = ['nothing-ear-2024', 'nothing-ear-a', 'nothing-ear-2', 'nothing-ear-1', 'nothing-ear-3', 'generic'];
 
   for (const genre of newGenres) {
