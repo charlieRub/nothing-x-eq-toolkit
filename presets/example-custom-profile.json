@@ -1,0 +1,20 @@
+{
+  "profiles": [
+    {
+      "name": "Mi Perfil Nuevo",
+      "slug": "mi-perfil-nuevo",
+      "intent": "Describe aqui el genero, artista y objetivo sonoro.",
+      "bassEnhance": "Off, 1, 2, etc. Esto no se codifica en el QR.",
+      "bands": [
+        { "freq": 55, "q": 1.1, "gain": 2.0 },
+        { "freq": 130, "q": 1.2, "gain": 1.0 },
+        { "freq": 300, "q": 1.6, "gain": -1.0 },
+        { "freq": 700, "q": 1.4, "gain": -0.5 },
+        { "freq": 2200, "q": 1.3, "gain": 1.5 },
+        { "freq": 4500, "q": 1.3, "gain": 1.2 },
+        { "freq": 8500, "q": 1.1, "gain": 1.0 },
+        { "freq": 15500, "q": 0.9, "gain": 0.8 }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "low-volume",
+  "name": "Low Volume",
+  "aliases": ["low volume", "volumen bajo", "quiet", "noche"],
+  "intent": "Compensate gentle low-volume listening with modest bass and air lift.",
+  "bandDeltas": [0.5, 0.2, 0, 0, 0.1, 0.1, 0.2, 0.2],
+  "autoeqWeight": 0.45,
+  "genreWeight": 1.0
+}

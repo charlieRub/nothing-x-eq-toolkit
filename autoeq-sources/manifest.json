@@ -1,0 +1,70 @@
+{
+  "repository": "https://github.com/jaakkopasanen/AutoEq",
+  "rawBaseUrl": "https://raw.githubusercontent.com/jaakkopasanen/AutoEq/master/",
+  "licenseNote": "AutoEq data is imported as source attribution and local CSV/README snapshots for supported Nothing models only.",
+  "sources": [
+    {
+      "id": "dhrme-nothing-ear",
+      "deviceId": "nothing-ear-2024",
+      "model": "Nothing ear",
+      "provider": "DHRME",
+      "confidence": "high",
+      "csvPath": "results/DHRME/in-ear/Nothing ear/Nothing ear.csv",
+      "readmePath": "results/DHRME/in-ear/Nothing ear/README.md"
+    },
+    {
+      "id": "rtings-5128-nothing-ear",
+      "deviceId": "nothing-ear-2024",
+      "model": "Nothing ear",
+      "provider": "RTINGS B&K 5128",
+      "confidence": "high",
+      "csvPath": "results/Rtings/Bruel & Kjaer 5128 in-ear/Nothing ear/Nothing ear.csv",
+      "readmePath": "results/Rtings/Bruel & Kjaer 5128 in-ear/Nothing ear/README.md"
+    },
+    {
+      "id": "dhrme-nothing-ear-a",
+      "deviceId": "nothing-ear-a",
+      "model": "Nothing ear (a)",
+      "provider": "DHRME",
+      "confidence": "high",
+      "csvPath": "results/DHRME/in-ear/Nothing ear (a)/Nothing ear (a).csv",
+      "readmePath": "results/DHRME/in-ear/Nothing ear (a)/README.md"
+    },
+    {
+      "id": "rtings-5128-nothing-ear-a",
+      "deviceId": "nothing-ear-a",
+      "model": "Nothing ear (a)",
+      "provider": "RTINGS B&K 5128",
+      "confidence": "high",
+      "csvPath": "results/Rtings/Bruel & Kjaer 5128 in-ear/Nothing ear (a)/Nothing ear (a).csv",
+      "readmePath": "results/Rtings/Bruel & Kjaer 5128 in-ear/Nothing ear (a)/README.md"
+    },
+    {
+      "id": "super-review-nothing-ear-2",
+      "deviceId": "nothing-ear-2",
+      "model": "Nothing ear (2)",
+      "provider": "Super Review",
+      "confidence": "high",
+      "csvPath": "results/Super Review/in-ear/Nothing ear (2)/Nothing ear (2).csv",
+      "readmePath": "results/Super Review/in-ear/Nothing ear (2)/README.md"
+    },
+    {
+      "id": "rtings-hms-nothing-ear-2",
+      "deviceId": "nothing-ear-2",
+      "model": "Nothing ear (2)",
+      "provider": "RTINGS HMS II.3",
+      "confidence": "medium-high",
+      "csvPath": "results/Rtings/HMS II.3 in-ear/Nothing ear (2)/Nothing ear (2).csv",
+      "readmePath": "results/Rtings/HMS II.3 in-ear/Nothing ear (2)/README.md"
+    },
+    {
+      "id": "rtings-hms-nothing-ear-1",
+      "deviceId": "nothing-ear-1",
+      "model": "Nothing ear (1)",
+      "provider": "RTINGS HMS II.3",
+      "confidence": "medium-high",
+      "csvPath": "results/Rtings/HMS II.3 in-ear/Nothing ear (1)/Nothing ear (1).csv",
+      "readmePath": "results/Rtings/HMS II.3 in-ear/Nothing ear (1)/README.md"
+    }
+  ]
+}

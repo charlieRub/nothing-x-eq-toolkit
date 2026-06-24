@@ -1,0 +1,11 @@
+node_modules/
+.codex-remote-attachments/
+.agents/
+*.zip
+example-nothing-community.jpg
+
+# Temporary generated outputs can be regenerated.
+output/
+
+# Local historical QR experiments; official import QRs are in qr/.
+legacy/nothing-qr/

@@ -1,0 +1,9 @@
+{
+  "id": "soft-treble",
+  "name": "Soft Treble",
+  "aliases": ["soft treble", "agudos suaves", "no chillones", "sin sibilancia", "relaxed"],
+  "intent": "Reduce harshness and sibilance for sensitive listeners.",
+  "bandDeltas": [0, 0.1, 0.1, 0.1, 0.1, -0.4, -0.7, -0.4],
+  "autoeqWeight": 0.55,
+  "genreWeight": 0.9
+}

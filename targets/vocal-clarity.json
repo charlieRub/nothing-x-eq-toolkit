@@ -1,0 +1,9 @@
+{
+  "id": "vocal-clarity",
+  "name": "Vocal Clarity",
+  "aliases": ["vocal", "voice", "dialogue", "voz", "claridad"],
+  "intent": "Prioritize intelligibility and vocal presence while controlling bass masking.",
+  "bandDeltas": [-0.3, -0.4, -0.5, 0.2, 0.8, 0.5, 0.1, 0],
+  "autoeqWeight": 0.5,
+  "genreWeight": 1.0
+}

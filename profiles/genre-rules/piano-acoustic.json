@@ -1,0 +1,24 @@
+{
+  "id": "piano-acoustic",
+  "name": "Piano Acoustic",
+  "aliases": ["piano", "acoustic", "acustica", "instrumental", "classical", "clasica", "jazz piano"],
+  "intent": "Natural body, hammer attack, harmonics and air without artificial bass.",
+  "bassEnhance": "Off.",
+  "baseBands": [
+    { "freq": 55, "q": 1.0, "gain": 0.7 },
+    { "freq": 130, "q": 1.2, "gain": 0.3 },
+    { "freq": 280, "q": 1.6, "gain": -0.6 },
+    { "freq": 650, "q": 1.2, "gain": 0.5 },
+    { "freq": 2200, "q": 1.2, "gain": 0.8 },
+    { "freq": 4300, "q": 1.1, "gain": 0.7 },
+    { "freq": 8500, "q": 1.0, "gain": 0.5 },
+    { "freq": 15500, "q": 0.9, "gain": 0.7 }
+  ],
+  "preferenceDeltas": {
+    "bass": [0.3, 0.2, 0, 0, 0, 0, 0, 0],
+    "vocal": [0, 0, -0.1, 0, 0.2, 0.2, 0, 0],
+    "treble": [0, 0, 0, 0, 0.1, 0.2, 0.3, 0.3],
+    "energy": [0.1, 0, 0, 0, 0.1, 0.2, 0.2, 0.1],
+    "warmth": [0.2, 0.3, 0.2, 0.1, -0.1, -0.2, -0.2, 0]
+  }
+}

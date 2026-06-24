@@ -1,0 +1,9 @@
+{
+  "id": "club-bass",
+  "name": "Club Bass",
+  "aliases": ["club", "bass", "bajos", "fiesta", "gym"],
+  "intent": "More physical low-end and energy while keeping low-mid mud controlled.",
+  "bandDeltas": [0.9, 0.4, -0.3, -0.1, 0.1, 0.2, 0.2, 0.1],
+  "autoeqWeight": 0.35,
+  "genreWeight": 1.0
+}

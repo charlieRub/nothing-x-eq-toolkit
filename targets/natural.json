@@ -1,0 +1,9 @@
+{
+  "id": "natural",
+  "name": "Natural",
+  "aliases": ["natural", "balanced", "balanceado"],
+  "intent": "Balanced listening with low fatigue and minimal coloration.",
+  "bandDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+  "autoeqWeight": 0.55,
+  "genreWeight": 1.0
+}

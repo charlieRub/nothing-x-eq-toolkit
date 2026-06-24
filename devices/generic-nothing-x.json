@@ -1,0 +1,19 @@
+{
+  "id": "generic-nothing-x",
+  "name": "Generic Nothing X",
+  "aliases": ["generic", "nothing x", "default"],
+  "measurementConfidence": "low",
+  "confidenceReason": "Generic fallback without direct model measurement.",
+  "notes": "Fallback profile when the exact Nothing Ear model is unknown. Optimizes for broad compatibility and moderate gains.",
+  "defaultBassEnhance": "Off",
+  "preferredSource": null,
+  "autoeqSources": [],
+  "autoeqColumn": "equalization",
+  "knownRisks": ["device-specific response unknown", "use conservative gain limits"],
+  "gainCeiling": 4.8,
+  "bandGainCompensation": [0, 0, 0, 0, 0, -0.2, -0.2, -0.1],
+  "riskBands": {
+    "mud": [3],
+    "harshness": [6, 7]
+  }
+}

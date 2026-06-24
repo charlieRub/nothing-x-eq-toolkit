@@ -1,0 +1,31 @@
+{
+  "name": "nothing-ear-eq-qr-profiles",
+  "version": "1.0.0",
+  "description": "Generate Nothing X importable QR codes for Nothing Ear advanced EQ profiles.",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "design": "node scripts/design-profile.js",
+    "design:examples": "node scripts/design-examples.js",
+    "design:reggaeton": "node scripts/design-profile.js --device=nothing-ear-2024 --genre=reggaeton --context=gym --target=club-bass --bass=1 --vocal=1 --treble=0 --energy=1 --warmth=0 --name=\"Reggaeton Expert\" --out=output/designed-reggaeton",
+    "generate": "node scripts/generate-qrs.js",
+    "generate:custom": "node scripts/generate-qrs.js --presets=presets/example-custom-profile.json --out=output/custom",
+    "import:autoeq": "node scripts/import-autoeq.js",
+    "test": "node scripts/test-expert-designer.js",
+    "validate": "node scripts/validate-profiles.js",
+    "validate:custom": "node scripts/validate-profiles.js --presets=presets/example-custom-profile.json"
+  },
+  "keywords": [
+    "nothing-ear",
+    "nothing-x",
+    "equalizer",
+    "qr-code",
+    "audio"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "jimp": "^1.6.1",
+    "jsqr": "^1.4.0",
+    "qrcode": "^1.5.4"
+  }
+}

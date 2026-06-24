@@ -1,0 +1,20 @@
+{
+  "id": "nothing-ear-2",
+  "name": "Nothing Ear (2)",
+  "aliases": ["ear 2", "ear(2)", "nothing ear 2", "nothing ear (2)"],
+  "measurementConfidence": "high",
+  "confidenceReason": "AutoEq contains direct Nothing ear (2) measurements from Super Review and RTINGS HMS II.3.",
+  "notes": "Ear (2) is commonly described as controlled and extended in bass with assertive top-end energy. Be conservative from 4 kHz upward.",
+  "defaultBassEnhance": "Off; level 1 only for bass-light tracks",
+  "preferredSource": "super-review-nothing-ear-2",
+  "autoeqSources": ["super-review-nothing-ear-2", "rtings-hms-nothing-ear-2"],
+  "autoeqColumn": "equalization",
+  "knownRisks": ["upper-treble sharpness", "sibilance if band 7 is boosted too much"],
+  "gainCeiling": 5.0,
+  "bandGainCompensation": [0, 0, -0.2, 0, 0.1, -0.5, -0.6, -0.4],
+  "riskBands": {
+    "harshness": [6, 7],
+    "sibilance": [7],
+    "fakeAir": [8]
+  }
+}

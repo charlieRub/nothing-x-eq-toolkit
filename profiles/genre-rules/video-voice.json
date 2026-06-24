@@ -1,0 +1,24 @@
+{
+  "id": "video-voice",
+  "name": "Video Voice",
+  "aliases": ["video", "youtube", "series", "podcast", "dialogue", "dialogo", "voz", "voice"],
+  "intent": "Dialogue intelligibility with controlled bass and low-mid cleanup.",
+  "bassEnhance": "Off.",
+  "baseBands": [
+    { "freq": 60, "q": 1.0, "gain": -0.5 },
+    { "freq": 140, "q": 1.2, "gain": -1.0 },
+    { "freq": 300, "q": 1.5, "gain": -1.0 },
+    { "freq": 700, "q": 1.3, "gain": 0.5 },
+    { "freq": 2200, "q": 1.2, "gain": 1.7 },
+    { "freq": 4300, "q": 1.2, "gain": 2.2 },
+    { "freq": 8500, "q": 1.1, "gain": 1.0 },
+    { "freq": 15500, "q": 0.9, "gain": 0.2 }
+  ],
+  "preferenceDeltas": {
+    "bass": [0.4, 0.3, 0, 0, 0, 0, 0, 0],
+    "vocal": [-0.2, -0.2, -0.2, 0.2, 0.7, 0.5, 0.1, 0],
+    "treble": [0, 0, 0, 0, 0.1, 0.2, 0.3, 0.1],
+    "energy": [0, 0, 0, 0, 0.1, 0.2, 0.1, 0],
+    "warmth": [0.1, 0.2, 0.1, 0.2, -0.1, -0.2, -0.2, 0]
+  }
+}

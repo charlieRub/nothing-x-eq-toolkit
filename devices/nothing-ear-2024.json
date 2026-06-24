@@ -1,0 +1,20 @@
+{
+  "id": "nothing-ear-2024",
+  "name": "Nothing Ear 2024",
+  "aliases": ["ear", "nothing-ear", "nothing ear", "ear 2024", "nothing ear 2024"],
+  "measurementConfidence": "high",
+  "confidenceReason": "AutoEq contains direct Nothing ear measurements from DHRME and RTINGS B&K 5128.",
+  "notes": "Premium in-ear Nothing model with advanced EQ support. Treat as detailed and capable in bass, but avoid aggressive upper-treble boosts for long listening.",
+  "defaultBassEnhance": "Off or level 1",
+  "preferredSource": "dhrme-nothing-ear",
+  "autoeqSources": ["dhrme-nothing-ear", "rtings-5128-nothing-ear"],
+  "autoeqColumn": "equalization",
+  "knownRisks": ["upper-treble fatigue if brightness is over-boosted", "low-mid mud with heavy bass presets"],
+  "gainCeiling": 5.5,
+  "bandGainCompensation": [0, 0, -0.2, 0, 0.1, -0.2, -0.3, -0.2],
+  "riskBands": {
+    "mud": [3],
+    "harshness": [6, 7],
+    "fakeAir": [8]
+  }
+}

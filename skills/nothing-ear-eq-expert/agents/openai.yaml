@@ -1,0 +1,4 @@
+interface:
+  display_name: "Nothing Ear EQ Expert"
+  short_description: "Generate compatible Nothing X EQ QR profiles."
+  default_prompt: "Create a Nothing Ear EQ profile for a music style and generate an importable Nothing X QR."

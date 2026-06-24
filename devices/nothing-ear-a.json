@@ -1,0 +1,20 @@
+{
+  "id": "nothing-ear-a",
+  "name": "Nothing Ear (a)",
+  "aliases": ["ear a", "ear(a)", "nothing ear a", "nothing ear (a)"],
+  "measurementConfidence": "high",
+  "confidenceReason": "AutoEq contains direct Nothing ear (a) measurements from DHRME and RTINGS B&K 5128.",
+  "notes": "Budget Nothing in-ear model with strong value and bass enhance support. Keep bass boosts controlled because Bass Enhance can already add low-end weight.",
+  "defaultBassEnhance": "Off for clarity, level 1 for pop/reggaeton",
+  "preferredSource": "dhrme-nothing-ear-a",
+  "autoeqSources": ["dhrme-nothing-ear-a", "rtings-5128-nothing-ear-a"],
+  "autoeqColumn": "equalization",
+  "knownRisks": ["bass enhance can stack too much low end", "presence/treble can become sharp at high volume"],
+  "gainCeiling": 5.0,
+  "bandGainCompensation": [0, -0.2, -0.2, 0, 0.1, -0.1, -0.2, -0.2],
+  "riskBands": {
+    "boom": [2],
+    "mud": [3],
+    "harshness": [6, 7]
+  }
+}

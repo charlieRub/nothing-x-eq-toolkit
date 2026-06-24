@@ -1,0 +1,19 @@
+{
+  "id": "nothing-ear-3",
+  "name": "Nothing Ear (3)",
+  "aliases": ["ear 3", "ear(3)", "nothing ear 3", "nothing ear (3)"],
+  "measurementConfidence": "low",
+  "confidenceReason": "No direct AutoEq source is mapped yet; uses modern Nothing fallback assumptions.",
+  "notes": "Use conservative modern Nothing tuning assumptions until model-specific measurements are added. Keep profile musical and avoid extreme treble.",
+  "defaultBassEnhance": "Off or level 1",
+  "preferredSource": null,
+  "autoeqSources": [],
+  "autoeqColumn": "equalization",
+  "knownRisks": ["unknown measured response", "avoid extreme treble until direct measurement exists"],
+  "gainCeiling": 5.0,
+  "bandGainCompensation": [0, 0, -0.2, 0, 0.1, -0.2, -0.3, -0.2],
+  "riskBands": {
+    "mud": [3],
+    "harshness": [6, 7]
+  }
+}
