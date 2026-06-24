@@ -1,0 +1,24 @@
+{
+  "id": "lofi-chill",
+  "name": "Lo-fi / Chill / Ambient",
+  "aliases": ["lofi", "lo-fi", "chill", "ambient", "study", "relax", "chillhop", "vaporwave"],
+  "intent": "Warm, rolled-off highs, gentle sub, vinyl-like mids, no harshness. Think tape saturation aesthetic.",
+  "bassEnhance": "Off or level 1 for extra warmth.",
+  "baseBands": [
+    { "freq": 55, "q": 1.0, "gain": 2.2 },
+    { "freq": 140, "q": 1.2, "gain": 1.5 },
+    { "freq": 300, "q": 1.2, "gain": 0.2 },
+    { "freq": 700, "q": 1.0, "gain": 0.5 },
+    { "freq": 2000, "q": 1.0, "gain": 0.4 },
+    { "freq": 4200, "q": 1.0, "gain": -0.3 },
+    { "freq": 8500, "q": 0.9, "gain": -0.8 },
+    { "freq": 15000, "q": 0.9, "gain": -1.0 }
+  ],
+  "preferenceDeltas": {
+    "bass": [0.6, 0.5, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0],
+    "vocal": [-0.2, -0.1, 0.0, 0.1, 0.3, 0.1, -0.1, -0.1],
+    "treble": [0.0, 0.0, 0.0, 0.0, 0.0, -0.2, -0.4, -0.5],
+    "energy": [0.0, 0.0, 0.0, 0.0, 0.1, -0.1, -0.3, -0.4],
+    "warmth": [0.6, 0.5, 0.3, 0.2, 0.0, -0.1, -0.2, -0.2]
+  }
+}

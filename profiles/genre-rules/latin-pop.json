@@ -1,0 +1,24 @@
+{
+  "id": "latin-pop",
+  "name": "Latin Pop / Bachata / Salsa",
+  "aliases": ["latin", "bachata", "salsa", "cumbia", "merengue", "latin pop", "shakira", "bad bunny pop"],
+  "intent": "Guitar warmth in mids, bright percussion (congas, timbales), vocals forward, moderate bass.",
+  "bassEnhance": "Off or level 1.",
+  "baseBands": [
+    { "freq": 55, "q": 1.0, "gain": 2.0 },
+    { "freq": 140, "q": 1.2, "gain": 1.0 },
+    { "freq": 300, "q": 1.4, "gain": -1.0 },
+    { "freq": 720, "q": 1.0, "gain": 0.6 },
+    { "freq": 2200, "q": 1.2, "gain": 1.8 },
+    { "freq": 4800, "q": 1.0, "gain": 1.6 },
+    { "freq": 9000, "q": 1.0, "gain": 1.0 },
+    { "freq": 15500, "q": 0.9, "gain": 0.7 }
+  ],
+  "preferenceDeltas": {
+    "bass": [0.5, 0.3, -0.2, 0.0, 0.0, 0.0, 0.0, 0.0],
+    "vocal": [-0.3, -0.2, 0.0, 0.2, 0.9, 0.6, 0.2, 0.0],
+    "treble": [0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.4],
+    "energy": [0.0, 0.0, 0.0, 0.1, 0.4, 0.5, 0.4, 0.2],
+    "warmth": [0.4, 0.3, 0.1, 0.2, 0.0, -0.3, -0.3, -0.1]
+  }
+}

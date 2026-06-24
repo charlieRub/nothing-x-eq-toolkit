@@ -1,0 +1,24 @@
+{
+  "id": "jazz",
+  "name": "Jazz",
+  "aliases": ["jazz", "smooth jazz", "bebop", "jazz trio", "jazz piano", "miles davis", "coltrane"],
+  "intent": "Warm upright bass, clean piano, airy cymbals, spacious imaging. Very little sub-bass boost. Natural and open.",
+  "bassEnhance": "Off.",
+  "baseBands": [
+    { "freq": 55, "q": 1.0, "gain": 0.4 },
+    { "freq": 135, "q": 1.2, "gain": 0.6 },
+    { "freq": 285, "q": 1.2, "gain": -0.4 },
+    { "freq": 670, "q": 1.0, "gain": 0.6 },
+    { "freq": 2100, "q": 1.0, "gain": 0.9 },
+    { "freq": 4500, "q": 1.0, "gain": 0.8 },
+    { "freq": 9000, "q": 0.9, "gain": 0.7 },
+    { "freq": 15500, "q": 0.9, "gain": 0.9 }
+  ],
+  "preferenceDeltas": {
+    "bass": [0.2, 0.2, -0.1, 0.0, 0.0, 0.0, 0.0, 0.0],
+    "vocal": [-0.1, -0.1, 0.0, 0.1, 0.5, 0.4, 0.1, 0.0],
+    "treble": [0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.4, 0.5],
+    "energy": [0.0, 0.0, 0.0, 0.1, 0.2, 0.2, 0.3, 0.3],
+    "warmth": [0.3, 0.3, 0.2, 0.2, 0.0, -0.1, -0.2, -0.1]
+  }
+}

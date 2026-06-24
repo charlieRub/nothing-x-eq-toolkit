@@ -1,0 +1,20 @@
+{
+  "id": "nothing-ear-1",
+  "name": "Nothing Ear (1)",
+  "aliases": ["ear 1", "ear(1)", "nothing ear 1", "nothing ear (1)"],
+  "measurementConfidence": "medium-high",
+  "confidenceReason": "AutoEq contains Nothing ear (1) measurements from RTINGS HMS II.3.",
+  "notes": "First-generation Nothing in-ear. Slightly warm tuning with a broad presence peak. Keep treble boosts moderate as the driver can become sibilant above 8 kHz.",
+  "defaultBassEnhance": "Off or level 1",
+  "preferredSource": "rtings-hms-nothing-ear-1",
+  "autoeqSources": ["rtings-hms-nothing-ear-1"],
+  "autoeqColumn": "equalization",
+  "knownRisks": ["sibilance if bands 6-7 are heavily boosted", "slightly warm stock tuning may mask vocal detail"],
+  "gainCeiling": 5.0,
+  "bandGainCompensation": [0, -0.1, -0.2, 0, 0.2, -0.3, -0.4, -0.3],
+  "riskBands": {
+    "mud": [3],
+    "harshness": [6, 7],
+    "sibilance": [7]
+  }
+}

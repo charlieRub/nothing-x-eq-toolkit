@@ -1,0 +1,24 @@
+{
+  "id": "metal",
+  "name": "Metal / Heavy",
+  "aliases": ["metal", "heavy metal", "death metal", "thrash", "metalcore", "hardcore", "heavy"],
+  "intent": "Defined double kick drum, guitar crunch and bite, aggressive presence, controlled cymbal harshness. Sub should be tight, not boomy.",
+  "bassEnhance": "Off. Bass Enhance muddies double kick definition.",
+  "baseBands": [
+    { "freq": 48, "q": 1.2, "gain": 2.0 },
+    { "freq": 140, "q": 1.4, "gain": 1.2 },
+    { "freq": 310, "q": 1.6, "gain": -1.5 },
+    { "freq": 750, "q": 1.0, "gain": 0.3 },
+    { "freq": 2400, "q": 1.2, "gain": 2.0 },
+    { "freq": 5000, "q": 1.0, "gain": 1.8 },
+    { "freq": 8500, "q": 1.0, "gain": 0.5 },
+    { "freq": 15000, "q": 0.9, "gain": 0.3 }
+  ],
+  "preferenceDeltas": {
+    "bass": [0.5, 0.3, -0.3, 0.0, 0.0, 0.0, 0.0, 0.0],
+    "vocal": [-0.3, -0.2, 0.0, 0.1, 0.8, 0.6, 0.1, 0.0],
+    "treble": [0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.3, 0.1],
+    "energy": [0.0, 0.0, 0.0, 0.1, 0.7, 0.7, 0.4, 0.1],
+    "warmth": [0.4, 0.3, -0.2, 0.0, 0.0, -0.4, -0.3, -0.1]
+  }
+}

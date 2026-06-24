@@ -1,0 +1,24 @@
+{
+  "id": "kpop",
+  "name": "K-Pop",
+  "aliases": ["k-pop", "kpop", "korean pop", "bts", "blackpink", "twice", "aespa"],
+  "intent": "Polished vocals front and center, punchy bass for choruses, controlled brightness for compressed mixes. Avoid harshness on already bright masters.",
+  "bassEnhance": "Off or level 1.",
+  "baseBands": [
+    { "freq": 55, "q": 1.0, "gain": 2.2 },
+    { "freq": 145, "q": 1.2, "gain": 0.8 },
+    { "freq": 300, "q": 1.4, "gain": -1.2 },
+    { "freq": 730, "q": 1.0, "gain": -0.5 },
+    { "freq": 2300, "q": 1.2, "gain": 2.0 },
+    { "freq": 5000, "q": 1.0, "gain": 1.5 },
+    { "freq": 9000, "q": 1.0, "gain": 0.8 },
+    { "freq": 15500, "q": 0.9, "gain": 0.6 }
+  ],
+  "preferenceDeltas": {
+    "bass": [0.5, 0.3, -0.2, 0.0, 0.0, 0.0, 0.0, 0.0],
+    "vocal": [-0.3, -0.2, 0.0, -0.1, 0.9, 0.7, 0.2, 0.0],
+    "treble": [0.0, 0.0, 0.0, 0.0, 0.0, 0.4, 0.4, 0.3],
+    "energy": [0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.3, 0.2],
+    "warmth": [0.4, 0.3, -0.1, -0.1, 0.0, -0.3, -0.2, -0.1]
+  }
+}
