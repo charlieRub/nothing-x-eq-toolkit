@@ -40,6 +40,22 @@ const CONTEXT_KEYWORDS = {
   'high-energy': ['fiesta', 'party', 'club']
 };
 
+const DEVICES = [
+  { id: 'nothing-ear-a', keywords: ['nothing ear a', 'nothing ear (a)', 'ear a', 'ear(a)'] },
+  { id: 'nothing-ear-2', keywords: ['nothing ear 2', 'nothing ear (2)', 'ear 2', 'ear(2)'] },
+  { id: 'nothing-ear-1', keywords: ['nothing ear 1', 'nothing ear (1)', 'ear 1', 'ear(1)'] },
+  { id: 'nothing-ear-3', keywords: ['nothing ear 3', 'ear 3'] },
+  { id: 'nothing-ear-2024', keywords: ['nothing ear 2024', 'ear 2024', 'nothing ear'] }
+];
+
+const TARGETS = [
+  { id: 'club-bass', keywords: ['club bass', 'club', 'fiesta', 'gym', 'bajos fuertes', 'mucha pegada'] },
+  { id: 'vocal-clarity', keywords: ['voz clara', 'voces claras', 'claridad vocal', 'entender la voz', 'dialogo claro'] },
+  { id: 'soft-treble', keywords: ['sin sibilancia', 'agudos suaves', 'no chillon', 'suave arriba'] },
+  { id: 'low-volume', keywords: ['volumen bajo', 'bajito', 'noche', 'dormir'] },
+  { id: 'natural', keywords: ['natural', 'balanceado', 'equilibrado', 'fiel'] }
+];
+
 /**
  * Helper to find if any keyword from a list exists in the text as a whole word.
  */
@@ -89,7 +105,25 @@ function parsePrompt(prompt) {
     }
   }
 
-  // 2. Detect Context
+  // 2. Detect Device
+  let detectedDevice;
+  for (const device of DEVICES) {
+    if (findMatch(normalized, device.keywords)) {
+      detectedDevice = device.id;
+      break;
+    }
+  }
+
+  // 3. Detect Target
+  let detectedTarget;
+  for (const target of TARGETS) {
+    if (findMatch(normalized, target.keywords)) {
+      detectedTarget = target.id;
+      break;
+    }
+  }
+
+  // 4. Detect Context
   let detectedContext = 'general';
   for (const [ctx, keywords] of Object.entries(CONTEXT_KEYWORDS)) {
     if (findMatch(normalized, keywords)) {
@@ -98,14 +132,16 @@ function parsePrompt(prompt) {
     }
   }
 
-  // 3. Detect Preferences
+  // 5. Detect Preferences
   const preferences = {};
   for (const [pref, keywords] of Object.entries(PREFERENCE_KEYWORDS)) {
     preferences[pref] = inferIntensity(normalized, keywords);
   }
 
   return {
+    device: detectedDevice,
     genre: detectedGenre,
+    target: detectedTarget,
     context: detectedContext,
     bass: preferences.bass,
     vocal: preferences.vocal,
@@ -118,6 +154,8 @@ function parsePrompt(prompt) {
 module.exports = {
   parsePrompt,
   GENRES,
+  DEVICES,
+  TARGETS,
   PREFERENCE_KEYWORDS,
   CONTEXT_KEYWORDS
 };

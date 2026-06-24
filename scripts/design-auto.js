@@ -30,9 +30,9 @@ async function main() {
   const parsed = parsePrompt(prompt);
   
   const options = {
-    device,
+    ...parsed,
+    device: parsed.device || device,
     name: argValue('name', undefined), // allow override, otherwise auto-generated
-    ...parsed
   };
 
   // Run the core engine
@@ -51,6 +51,8 @@ async function main() {
     targetUsed: profile.targetUsed,
     sourceUsed: profile.sourceUsed,
     confidence: profile.confidence,
+    bassEnhancePlan: profile.bassEnhancePlan,
+    optimizationReport: profile.optimizationReport,
     riskReport: profile.riskReport,
     designNotes: profile.designNotes,
   };

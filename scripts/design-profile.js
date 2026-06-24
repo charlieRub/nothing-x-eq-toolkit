@@ -77,6 +77,8 @@ async function main() {
     targetUsed: profile.targetUsed,
     sourceUsed: profile.sourceUsed,
     confidence: profile.confidence,
+    bassEnhancePlan: profile.bassEnhancePlan,
+    optimizationReport: profile.optimizationReport,
     riskReport: profile.riskReport,
     designNotes: profile.designNotes,
   };

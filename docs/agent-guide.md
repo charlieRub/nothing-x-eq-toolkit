@@ -10,7 +10,7 @@ You do NOT need to manually translate a user's natural language request into str
 npm run design:auto -- --device=nothing-ear-a --prompt="quiero reggaeton con muchos bajos para el gym" --json
 ```
 
-The script will automatically infer the genre, context, and taste levels and return a structured JSON response.
+The script will automatically infer the device when mentioned, genre, target, context, and taste levels and return a structured JSON response.
 
 ## Explicit Design Workflow
 
@@ -34,6 +34,14 @@ npm run design -- --device=<device-id> --genre=<genre-id-or-alias> --context=<co
 ## Interpreting the Output
 
 When you run the designer with `--json`, you receive a manifest. 
+
+Use these fields when explaining the result:
+
+- `sourceUsed`: AutoEq measurement or consensus source used.
+- `optimizationReport.gainBudget`: how much positive gain was reduced for clean headroom.
+- `optimizationReport.score`: internal quality score for the selected candidate.
+- `bassEnhancePlan`: whether Bass Enhance Off or Level 1 was chosen.
+- `riskReport.checks.autoEqSourcesUsed`: measurements used for device consensus.
 
 **Pay special attention to `riskReport.risks`**:
 The engine will detect acoustic problems (e.g., "Air band is high") and **Preference Conflicts** (e.g., "Bass and vocal are both maximized"). If you see conflicts, communicate them to the user.

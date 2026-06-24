@@ -6,16 +6,16 @@ description: Generate and refine Nothing Ear / Nothing X advanced equalizer prof
 # Nothing Ear EQ Expert
 
 ## Role
-Act as an autonomous audio engineering agent specialized in Nothing Ear in-ear tuning, music genres, and QR profile synthesis. You have access to a professional 10-layer EQ synthesis engine in this repository.
+Act as an autonomous audio engineering agent specialized in Nothing Ear in-ear tuning, music genres, and QR profile synthesis. You have access to a candidate-based EQ synthesis engine that uses AutoEq consensus, gain budgeting, Bass Enhance candidate selection, scoring, and Nothing X QR validation.
 
 ## The Auto-Design Workflow (Preferred)
 When a user asks for a profile in natural language (e.g., "quiero reggaeton con muchos bajos para el gym"), you **do not need to manually parse the arguments**. Use the natural language NLP wrapper:
 
 ```powershell
-npm run design:auto -- --device=nothing-ear-a --prompt="quiero reggaeton con muchos bajos para el gym" --json
+npm run design:auto -- --prompt="Nothing Ear (a), quiero reggaeton con muchos bajos para el gym" --json
 ```
 
-The engine will automatically detect the genre, context, and preference levels (bass, vocal, treble, energy, warmth) and output a JSON manifest with the final EQ bands, risk report, and QR image path.
+The engine will automatically detect the device when present, genre, target, context, and preference levels (bass, vocal, treble, energy, warmth) and output a JSON manifest with final EQ bands, optimization report, risk report, Bass Enhance plan, and QR image path.
 
 ## The Explicit Design Workflow
 If you need precise control over the parameters, use the explicit CLI:
@@ -41,7 +41,7 @@ npm run design -- --device=<device> --genre=<genre> --context=<context> --bass=<
 
 ## Important Rules
 1. **Always use the `--json` flag** when running the CLI to get machine-readable output.
-2. **Never generate manual JSONs yourself**. Always use the scripts, as they contain hardware compensation, soft-saturation, and AutoEQ logic.
-3. Read the `riskReport` from the `--json` output. If there are conflicts (e.g., "Bass and vocal are both maximized"), warn the user or adjust the prompt.
+2. **Never generate manual JSONs yourself**. Always use the scripts, as they contain hardware compensation, AutoEq consensus, gain budgeting, Bass Enhance candidate scoring, and QR validation.
+3. Read `optimizationReport` and `riskReport` from the `--json` output. Explain any gain-budget reduction, source consensus, and conflicts.
 4. Tell the user the recommended **Bass Enhance** level (found in the JSON), because Bass Enhance is NOT encoded in the QR payload.
 5. When responding to the user, always provide the **absolute path or embedded image of the generated QR PNG**.

@@ -125,13 +125,14 @@ The profile designer uses a multi-layer synthesis pipeline to generate hardware-
 1. **Genre Base Curve**: Foundational gain, frequency, and Q values calibrated per genre.
 2. **User Preference Deltas**: Five taste dimensions (bass, vocal, treble, energy, warmth) scaled from -2 to +2.
 3. **Target Curve Offsets**: Tonal targets (natural, club-bass, vocal-clarity, soft-treble, low-volume) add band-specific deltas.
-4. **AutoEQ Integration**: Measurement-backed hardware compensation weighted dynamically by source confidence.
+4. **AutoEQ Consensus**: Uses every imported measurement for the device and lowers correction strength where sources disagree.
 5. **Device Compensation**: Per-model gain correction and risk-band attenuation.
 6. **Context Adjustments**: Psychoacoustic gain offsets for noisy, low-volume, and high-energy environments.
 7. **Q Responsiveness**: Targets modify per-band bandwidth for surgical or diffuse EQ.
-8. **Soft Saturation**: Smooth compression near the gain ceiling instead of hard clipping.
-9. **Preference Conflict Detection**: Warns when opposing preferences (e.g., bass+vocal) may reduce profile quality.
-10. **Quality Report**: Checks for total energy, low-mid mud, auditory fatigue, and bass masking.
+8. **Bass Enhance Candidates**: Evaluates Off vs Level 1 when bass-heavy listening may benefit from hardware enhancement.
+9. **Gain Budget**: Reduces excessive positive gain automatically because Nothing X QR profiles do not encode preamp.
+10. **Quality Scoring**: Scores candidates for bass impact, vocal clarity, fatigue, mud, air and measurement confidence.
+11. **Preference Conflict Detection**: Warns when opposing preferences (e.g., bass+vocal) may reduce profile quality.
 
 ## Repository Structure
 
@@ -139,7 +140,9 @@ The profile designer uses a multi-layer synthesis pipeline to generate hardware-
 src/
   nothing-x-eq.js              Core encoder, validator, QR writer
   autoeq-adapter.js            AutoEq CSV adapter to Nothing X bands
+  bass-enhance-model.js        Bass Enhance candidate model
   profile-designer.js          Expert profile synthesis engine
+  profile-scorer.js            Gain budget and candidate scoring
 scripts/
   import-autoeq.js             Downloads selected Nothing AutoEq CSV/README files
   generate-qrs.js              Generate QR files from presets

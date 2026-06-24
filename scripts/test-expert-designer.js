@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { BAND_RANGES, validateProfile, ValidationError } = require('../src/nothing-x-eq');
 const { designProfile, parseLevel, softSaturate, detectPreferenceConflicts, CONFIDENCE_MULTIPLIERS } = require('../src/profile-designer');
-const { loadAutoEqManifest, selectAutoEqSource, loadAutoEqBands } = require('../src/autoeq-adapter');
+const { loadAutoEqManifest, selectAutoEqSource, loadAutoEqBands, getAutoEqConsensus } = require('../src/autoeq-adapter');
 const { parsePrompt } = require('../src/prompt-parser');
 
 function assertBandsInRange(profile) {
@@ -76,6 +76,14 @@ test('parsePrompt extracts genre, context and preferences', () => {
   const p4 = parsePrompt("algo normalito para estudiar");
   assert.equal(p4.genre, 'lofi-chill'); // "estudiar" mapped to lofi-chill
   assert.equal(p4.context, 'general');
+
+  const p5 = parsePrompt("Nothing Ear 2024 para reggaeton con voz clara y bajos fuertes");
+  assert.equal(p5.device, 'nothing-ear-2024');
+  assert.equal(p5.target, 'club-bass');
+
+  const p6 = parsePrompt("Nothing Ear (a) para podcast con dialogo claro");
+  assert.equal(p6.device, 'nothing-ear-a');
+  assert.equal(p6.genre, 'video-voice');
 });
 
 // ── AutoEQ Tests ──
@@ -87,6 +95,12 @@ test('AutoEq Adapter loads correctly', async () => {
   const autoEq = await loadAutoEqBands(source);
   assert.equal(autoEq.bands.length, 8);
   assert.ok(autoEq.bands.every((band) => typeof band.gain === 'number'));
+
+  const consensus = await getAutoEqConsensus({ id: 'nothing-ear-2024', preferredSource: 'dhrme-nothing-ear', autoeqSources: ['dhrme-nothing-ear', 'rtings-5128-nothing-ear'], autoeqColumn: 'equalization' });
+  assert.equal(consensus.consensus, true);
+  assert.equal(consensus.bands.length, 8);
+  assert.ok(consensus.sourcesUsed.includes('dhrme-nothing-ear'));
+  assert.ok(consensus.sourcesUsed.includes('rtings-5128-nothing-ear'));
 });
 
 // ── Original Genre Profile Tests ──
@@ -176,6 +190,27 @@ test('Extreme preferences do not exceed gain ceiling', async () => {
   for (const band of profile.bands) {
     assert.ok(band.gain <= 5.5, `Gain ${band.gain} exceeds ceiling 5.5`);
   }
+});
+
+test('Aggressive profiles apply gain budget and expose optimization report', async () => {
+  const profile = await designProfile({
+    device: 'nothing-ear-2024',
+    genre: 'reggaeton',
+    context: 'gym',
+    bass: 2,
+    vocal: 2,
+    treble: 1,
+    energy: 1,
+    name: 'Budget Test'
+  });
+
+  validateProfile(profile);
+  assertBandsInRange(profile);
+  assert.ok(profile.optimizationReport);
+  assert.ok(profile.optimizationReport.gainBudget.applied, 'Expected gain budget to be applied');
+  assert.ok(profile.riskReport.totalPositiveGain <= profile.optimizationReport.gainBudget.budget + 0.5);
+  assert.ok(profile.sourceUsed.startsWith('consensus:'));
+  assert.ok(profile.riskReport.checks.autoEqSourcesUsed.length >= 2);
 });
 
 // ── Validation Edge Cases ──

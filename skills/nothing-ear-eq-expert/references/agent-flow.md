@@ -20,8 +20,10 @@ Run:
 
 ```powershell
 npm run import:autoeq
-npm run design -- --device=<device> --genre=<genre> --context=<context> --target=<target-or-auto> --bass=<level> --vocal=<level> --treble=<level> --energy=<level> --warmth=<level> --name="<short name>"
+npm run design:auto -- --prompt="<full user request including device, genre, context and taste>" --json
 ```
+
+Use the explicit `npm run design -- ... --json` command only when you need to override the parsed fields.
 
 Use `--target=club-bass` for gym/club/reggaeton with strong bass, `--target=vocal-clarity` for dialogue or lyric priority, `--target=soft-treble` for treble-sensitive users, and omit target for auto inference.
 
@@ -33,7 +35,9 @@ The output JSON must include:
 - `targetUsed`;
 - `confidence`;
 - `riskReport`;
+- `optimizationReport`;
+- `bassEnhancePlan`;
 - `bassEnhance`;
 - 8 `bands`.
 
-Final response must include QR image/path, 8-band table, Bass Enhance recommendation, source, target, confidence, and short explanation.
+Final response must include QR image/path, 8-band table, Bass Enhance recommendation, source/consensus, target, confidence, gain-budget summary, risk summary, and short explanation.

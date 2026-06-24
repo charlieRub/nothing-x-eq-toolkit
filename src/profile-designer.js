@@ -1,7 +1,9 @@
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const { SAFE_ZONES, slugify, validateProfile } = require('./nothing-x-eq');
-const { getAutoEqCompensation } = require('./autoeq-adapter');
+const { getAutoEqConsensus } = require('./autoeq-adapter');
+const { bassEnhanceCandidates, formatBassEnhanceRecommendation } = require('./bass-enhance-model');
+const { applyGainBudget, scoreProfile } = require('./profile-scorer');
 
 const DEFAULT_DEVICE = 'generic-nothing-x';
 const DEFAULT_GENRE = 'pop';
@@ -206,7 +208,7 @@ function detectPreferenceConflicts(preferences) {
  * @param {string[]} preferenceConflicts - Detected preference conflicts.
  * @returns {Object} Complete quality report.
  */
-function qualityReport(bands, device, genre, target, preferences, autoEqResult, preferenceConflicts) {
+function qualityReport(bands, device, genre, target, preferences, autoEqResult, preferenceConflicts, optimization) {
   const risks = [];
 
   // Bass masking check
@@ -226,8 +228,17 @@ function qualityReport(bands, device, genre, target, preferences, autoEqResult, 
 
   // Total positive energy check
   const totalPositiveGain = bands.reduce((sum, band) => sum + Math.max(0, band.gain), 0);
-  if (totalPositiveGain > 14) {
+  const gainBudgetLimit = optimization?.gainBudget?.budget || 14;
+  if (totalPositiveGain > gainBudgetLimit + 0.2) {
     risks.push(`Total positive gain is ${roundGain(totalPositiveGain)} dB; risk of overall loudness imbalance and distortion at high volume.`);
+  }
+
+  if (optimization?.gainBudget?.applied) {
+    risks.push(`Gain budget applied: reduced positive gain from ${optimization.gainBudget.before} dB to ${optimization.gainBudget.after} dB for cleaner headroom.`);
+  }
+
+  if (autoEqResult?.consensus && autoEqResult.averageBandConfidence < 0.75) {
+    risks.push(`AutoEq sources disagree on some bands; consensus confidence is ${autoEqResult.averageBandConfidence}.`);
   }
 
   // Low-mid mud check (bands 3-4)
@@ -257,6 +268,10 @@ function qualityReport(bands, device, genre, target, preferences, autoEqResult, 
       genreRule: genre.id,
       deviceRiskBands: device.riskBands || {},
       preferenceConflicts: preferenceConflicts.length,
+      gainBudget: optimization?.gainBudget?.budget,
+      qualityScore: optimization?.score,
+      bassEnhancePlan: optimization?.bassEnhancePlan?.id,
+      autoEqSourcesUsed: autoEqResult?.sourcesUsed || (autoEqResult?.source ? [autoEqResult.source.id] : []),
     },
   };
 }
@@ -273,7 +288,7 @@ function qualityReport(bands, device, genre, target, preferences, autoEqResult, 
  * @param {string} context - Inferred listening context.
  * @returns {{bands: Array<{freq:number,q:number,gain:number}>, explanations: string[]}}
  */
-function designBands(device, genre, target, preferences, autoEqResult, context) {
+function designBands(device, genre, target, preferences, autoEqResult, context, bassEnhancePlan = { eqOffset: Array(8).fill(0) }) {
   const compensation = device.bandGainCompensation || Array(8).fill(0);
   const gainCeiling = device.gainCeiling ?? 5;
   const explanations = [];
@@ -314,6 +329,7 @@ function designBands(device, genre, target, preferences, autoEqResult, context) 
       autoEqGain * autoEqWeight +
       (compensation[index] || 0) +
       (contextGains[index] || 0) +
+      (bassEnhancePlan.eqOffset?.[index] || 0) +
       riskCut;
 
     // Apply soft saturation instead of hard clamp
@@ -339,6 +355,9 @@ function designBands(device, genre, target, preferences, autoEqResult, context) 
 
   if (context !== 'general' && context !== 'home') {
     explanations.push(`Context adjustment applied for ${context} listening environment.`);
+  }
+  if (bassEnhancePlan.level === 1) {
+    explanations.push('Bass Enhance level 1 candidate selected; low EQ bands were reduced to keep bass powerful but clean.');
   }
   if (preferences.bass > 0) explanations.push('Added low-end weight while keeping band 3 cut to prevent mud.');
   if (preferences.vocal > 0) explanations.push('Prioritized lyric/dialogue clarity through bands 5 and 6.');
@@ -391,10 +410,36 @@ async function designProfile(options = {}, baseDir = process.cwd()) {
   const preferences = buildPreferences(options);
   const context = inferContext(options.context);
   const target = inferTarget(options, genre, preferences, context, targets);
-  const autoEqResult = await getAutoEqCompensation(device, baseDir);
+  const autoEqResult = await getAutoEqConsensus(device, baseDir);
   const preferenceConflicts = detectPreferenceConflicts(preferences);
-  const { bands, explanations } = designBands(device, genre, target, preferences, autoEqResult, context);
-  const report = qualityReport(bands, device, genre, target, preferences, autoEqResult, preferenceConflicts);
+  const candidates = bassEnhanceCandidates(genre, target, context, preferences).map((bassEnhancePlan) => {
+    const designed = designBands(device, genre, target, preferences, autoEqResult, context, bassEnhancePlan);
+    const gainBudget = applyGainBudget(designed.bands, genre, target, context, preferences);
+    const score = scoreProfile({
+      bands: gainBudget.bands,
+      genre,
+      target,
+      context,
+      preferences,
+      autoEqResult,
+      bassEnhancePlan,
+      budgetReport: gainBudget,
+    });
+
+    return {
+      ...designed,
+      bands: gainBudget.bands,
+      optimization: {
+        score,
+        gainBudget,
+        bassEnhancePlan,
+      },
+    };
+  });
+
+  const selected = candidates.sort((a, b) => b.optimization.score - a.optimization.score)[0];
+  const { bands, explanations, optimization } = selected;
+  const report = qualityReport(bands, device, genre, target, preferences, autoEqResult, preferenceConflicts, optimization);
   const name = options.name || `${genre.name} ${device.name}`.replace(/^Nothing\s+/i, '').slice(0, 32).trim();
   const profile = {
     name,
@@ -407,7 +452,24 @@ async function designProfile(options = {}, baseDir = process.cwd()) {
     sourceUsed: report.source,
     confidence: report.confidence,
     intent: `${genre.intent} Optimized for ${device.name}.`,
-    bassEnhance: chooseBassEnhance(device, genre, preferences),
+    bassEnhance: formatBassEnhanceRecommendation(optimization.bassEnhancePlan),
+    bassEnhancePlan: {
+      id: optimization.bassEnhancePlan.id,
+      level: optimization.bassEnhancePlan.level,
+      note: optimization.bassEnhancePlan.note,
+    },
+    optimizationReport: {
+      score: optimization.score,
+      gainBudget: optimization.gainBudget,
+      candidateCount: candidates.length,
+      autoEqConsensus: autoEqResult
+        ? {
+            enabled: Boolean(autoEqResult.consensus),
+            sourcesUsed: autoEqResult.sourcesUsed || [autoEqResult.source.id],
+            averageBandConfidence: autoEqResult.averageBandConfidence || null,
+          }
+        : null,
+    },
     designNotes: [
       `Device: ${device.name}. ${device.notes}`,
       `Genre: ${genre.name}. ${genre.intent}`,
