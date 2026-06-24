@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/banner.png" alt="Nothing X EQ Toolkit Banner" width="100%">
+  <img src="assets/banner.png?v=2" alt="Nothing X EQ Toolkit Banner" width="100%">
   <br/>
   <h1>Nothing Ear EQ QR Profiles</h1>
   <p>Generate importable Nothing X advanced EQ QR codes for Nothing Ear devices.</p>
