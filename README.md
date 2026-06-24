@@ -84,19 +84,52 @@ To generate the acceptance examples for the agent workflow:
 npm run design:examples
 ```
 
-## Current Presets
+## Supported Genres
 
-A selection of rigorously tested profiles is available in `presets/default-profiles.json`. These include:
+The expert designer includes calibrated tuning rules for 14 musical genres and use cases:
 
-- `Reggaeton Equilibrado`
-- `Reggaeton Fiesta Club`
-- `Reggaeton Base Protagonista`
-- `Reggaeton Voz y Base`
-- `Pop Vocal Brillante`
-- `Video Voz Clara`
-- `Piano Natural`
+| Genre | ID | Sonic Focus |
+|---|---|---|
+| Reggaeton | `reggaeton` | Sub-bass and dembow base with vocal clarity |
+| Pop Vocal | `pop` | Forward vocal, clean chorus lift, bright but controlled |
+| Hip Hop | `hip-hop` | Sub and 808 weight with vocal articulation |
+| Electronic / EDM | `electronic-club` | Deep sub, clean kick, energetic presence |
+| Rock | `rock` | Guitar presence, snare attack, vocal cut |
+| Metal / Heavy | `metal` | Defined double kick, guitar bite, controlled cymbals |
+| R&B / Soul | `r-and-b` | Warm sub, rich low-mids, silky vocal presence |
+| Latin Pop / Bachata / Salsa | `latin-pop` | Guitar warmth, bright percussion, vocals forward |
+| K-Pop | `kpop` | Polished vocals, punchy bass, controlled brightness |
+| Jazz | `jazz` | Warm upright bass, clean piano, airy cymbals |
+| Flamenco | `flamenco` | Guitar body, palmas presence, cante clarity |
+| Lo-fi / Chill / Ambient | `lofi-chill` | Rolled-off highs, warmth, vinyl-like mids |
+| Piano / Acoustic / Classical | `piano-acoustic` | Natural body, hammer attack, harmonics and air |
+| Video / Podcast / Dialogue | `video-voice` | Dialogue intelligibility with controlled bass |
 
-Each preset defines the profile name, listening intent, Bass Enhance recommendation, and the 8 parametric EQ bands (frequency, Q-factor, and gain).
+## Supported Devices
+
+| Device | AutoEQ Source | Confidence |
+|---|---|---|
+| Nothing Ear 2024 | DHRME, RTINGS B&K 5128 | High |
+| Nothing Ear (a) | DHRME, RTINGS B&K 5128 | High |
+| Nothing Ear (2) | Super Review, RTINGS HMS II.3 | High |
+| Nothing Ear (1) | RTINGS HMS II.3 | Medium-High |
+| Nothing Ear (3) | Heuristic fallback | Low |
+| Generic Nothing X | Conservative defaults | Low |
+
+## Synthesis Engine
+
+The profile designer uses a multi-layer synthesis pipeline to generate hardware-optimized EQ profiles:
+
+1. **Genre Base Curve**: Foundational gain, frequency, and Q values calibrated per genre.
+2. **User Preference Deltas**: Five taste dimensions (bass, vocal, treble, energy, warmth) scaled from -2 to +2.
+3. **Target Curve Offsets**: Tonal targets (natural, club-bass, vocal-clarity, soft-treble, low-volume) add band-specific deltas.
+4. **AutoEQ Integration**: Measurement-backed hardware compensation weighted dynamically by source confidence.
+5. **Device Compensation**: Per-model gain correction and risk-band attenuation.
+6. **Context Adjustments**: Psychoacoustic gain offsets for noisy, low-volume, and high-energy environments.
+7. **Q Responsiveness**: Targets modify per-band bandwidth for surgical or diffuse EQ.
+8. **Soft Saturation**: Smooth compression near the gain ceiling instead of hard clipping.
+9. **Preference Conflict Detection**: Warns when opposing preferences (e.g., bass+vocal) may reduce profile quality.
+10. **Quality Report**: Checks for total energy, low-mid mud, auditory fatigue, and bass masking.
 
 ## Repository Structure
 
@@ -104,6 +137,7 @@ Each preset defines the profile name, listening intent, Bass Enhance recommendat
 src/
   nothing-x-eq.js              Core encoder, validator, QR writer
   autoeq-adapter.js            AutoEq CSV adapter to Nothing X bands
+  profile-designer.js          Expert profile synthesis engine
 scripts/
   import-autoeq.js             Downloads selected Nothing AutoEq CSV/README files
   generate-qrs.js              Generate QR files from presets
