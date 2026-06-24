@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const { BAND_RANGES, validateProfile, ValidationError } = require('../src/nothing-x-eq');
 const { designProfile, parseLevel, softSaturate, detectPreferenceConflicts, CONFIDENCE_MULTIPLIERS } = require('../src/profile-designer');
 const { loadAutoEqManifest, selectAutoEqSource, loadAutoEqBands } = require('../src/autoeq-adapter');
+const { parsePrompt } = require('../src/prompt-parser');
 
 function assertBandsInRange(profile) {
   profile.bands.forEach((band, index) => {
@@ -53,6 +54,28 @@ test('CONFIDENCE_MULTIPLIERS are properly defined', () => {
   assert.equal(CONFIDENCE_MULTIPLIERS['medium-high'], 0.85);
   assert.equal(CONFIDENCE_MULTIPLIERS['medium'], 0.7);
   assert.equal(CONFIDENCE_MULTIPLIERS['low'], 0.5);
+});
+
+// ── Prompt Parser Tests ──
+
+test('parsePrompt extracts genre, context and preferences', () => {
+  const p1 = parsePrompt("quiero reggaeton con muchos bajos para el gym");
+  assert.equal(p1.genre, 'reggaeton');
+  assert.equal(p1.context, 'noisy');
+  assert.equal(p1.bass, 2); // "muchos bajos" -> 2
+
+  const p2 = parsePrompt("podcast para dormir sin agudos chillones");
+  assert.equal(p2.genre, 'video-voice');
+  assert.equal(p2.context, 'low-volume');
+  assert.equal(p2.treble, -1); // "sin agudos" -> -1
+
+  const p3 = parsePrompt("metal pesado con voces claras");
+  assert.equal(p3.genre, 'metal');
+  assert.equal(p3.vocal, 1); // "voces" sin modificador alto -> 1
+
+  const p4 = parsePrompt("algo normalito para estudiar");
+  assert.equal(p4.genre, 'lofi-chill'); // "estudiar" mapped to lofi-chill
+  assert.equal(p4.context, 'general');
 });
 
 // ── AutoEQ Tests ──

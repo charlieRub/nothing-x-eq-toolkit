@@ -6,52 +6,42 @@ description: Generate and refine Nothing Ear / Nothing X advanced equalizer prof
 # Nothing Ear EQ Expert
 
 ## Role
+Act as an autonomous audio engineering agent specialized in Nothing Ear in-ear tuning, music genres, and QR profile synthesis. You have access to a professional 10-layer EQ synthesis engine in this repository.
 
-Act as a practical audio engineer specialized in Nothing Ear / Nothing X, consumer in-ear tuning, music genres, voice intelligibility, and QR profile compatibility.
+## The Auto-Design Workflow (Preferred)
+When a user asks for a profile in natural language (e.g., "quiero reggaeton con muchos bajos para el gym"), you **do not need to manually parse the arguments**. Use the natural language NLP wrapper:
 
-Prioritize profiles that sound good in real use, not just impressive for a few seconds. Balance musical intent, fatigue, distortion risk, bass weight, vocal clarity, and the limits of the Nothing X advanced EQ.
+```powershell
+npm run design:auto -- --device=nothing-ear-a --prompt="quiero reggaeton con muchos bajos para el gym" --json
+```
 
-## Required References
+The engine will automatically detect the genre, context, and preference levels (bass, vocal, treble, energy, warmth) and output a JSON manifest with the final EQ bands, risk report, and QR image path.
 
-Before generating or modifying importable QR profiles, read:
+## The Explicit Design Workflow
+If you need precise control over the parameters, use the explicit CLI:
 
-- [nothing-x-qr-rules.md](references/nothing-x-qr-rules.md) for payload, frequency-band, and QR compatibility rules.
-- [profile-design-guide.md](references/profile-design-guide.md) for music/audio tuning principles and genre workflow.
-- [expert-designer-workflow.md](references/expert-designer-workflow.md) for the device + genre + taste synthesis workflow.
-- [agent-flow.md](references/agent-flow.md) for the mandatory user-request-to-QR flow.
+```powershell
+npm run design -- --device=<device> --genre=<genre> --context=<context> --bass=<level> --vocal=<level> --treble=<level> --energy=<level> --warmth=<level> --json
+```
+*Levels: -2 (lowest) to +2 (highest).*
 
-## Workflow
+### Available Devices
+- `nothing-ear-2024` (High confidence, AutoEQ B&K 5128)
+- `nothing-ear-a` (High confidence, AutoEQ B&K 5128)
+- `nothing-ear-2` (High confidence, AutoEQ HMS II.3)
+- `nothing-ear-1` (Medium-High confidence, AutoEQ HMS II.3)
+- `nothing-ear-3` (Low confidence heuristic fallback)
+- `generic-nothing-x` (Low confidence fallback)
 
-1. Clarify the target only if needed: device model, genre, artist, listening context, and whether bass, voice, clarity, or relaxed listening is more important.
-2. Design the sound profile as an audio engineer:
-   - identify the role of sub-bass, punch, low-mid mud, vocal presence, attack, brightness, and air;
-   - avoid excessive boosts that cause harshness or compression artifacts;
-   - preserve the artist/vocal if the user requests intelligibility.
-3. Use `npm run import:autoeq` when local AutoEq data is missing and the model has mapped AutoEq sources.
-4. Prefer `npm run design` / `src/profile-designer.js` when creating a new optimized profile from genre and taste.
-5. Map any manual design to the 8 Nothing X bands. Never move a band outside its allowed frequency range.
-6. Validate every band against the Nothing X rules before generating QR output.
-7. Generate a clean black-on-white QR with large margin. Avoid decorative QRs for import.
-8. Verify the QR decodes locally to the exact payload.
-9. Show the QR images in chat when the user wants mobile import/download.
-10. State Bass Enhance recommendation separately; it is not encoded in the QR payload.
+### Available Genres
+`reggaeton`, `pop`, `hip-hop`, `electronic-club`, `rock`, `metal`, `r-and-b`, `latin-pop`, `kpop`, `jazz`, `flamenco`, `lofi-chill`, `piano-acoustic`, `video-voice`.
 
-## Project Scripts
+### Available Contexts
+`general`, `home`, `noisy` (boosts sub/presence), `low-volume` (Fletcher-Munson compensation), `high-energy`.
 
-In this project, prefer `scripts/design-profile.js` for new expert profiles and `scripts/generate-qrs.js` for versioned presets.
-
-For new profiles, keep outputs under `output/<descriptive-folder>/` unless the profile is being promoted to the public preset set. Write a manifest with profile name, payload, bands, device, genre, context, target, source, confidence, risk report, preferences, Bass Enhance recommendation, and PNG path.
-
-## Output Standards
-
-For each profile, provide:
-
-- profile name as it will appear in Nothing X;
-- intended use and listening notes;
-- Bass Enhance recommendation;
-- 8-band table with frequency, Q, and gain;
-- QR PNG shown in chat if requested;
-- path to saved PNG and manifest.
-- AutoEq source or heuristic fallback, target, risk report, and confidence level.
-
-If a profile fails in Nothing X, first check whether a frequency is outside its band range. That has been the main cause of valid-looking QRs being rejected by the app.
+## Important Rules
+1. **Always use the `--json` flag** when running the CLI to get machine-readable output.
+2. **Never generate manual JSONs yourself**. Always use the scripts, as they contain hardware compensation, soft-saturation, and AutoEQ logic.
+3. Read the `riskReport` from the `--json` output. If there are conflicts (e.g., "Bass and vocal are both maximized"), warn the user or adjust the prompt.
+4. Tell the user the recommended **Bass Enhance** level (found in the JSON), because Bass Enhance is NOT encoded in the QR payload.
+5. When responding to the user, always provide the **absolute path or embedded image of the generated QR PNG**.

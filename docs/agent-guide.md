@@ -1,79 +1,47 @@
-# Agent guide
+# Agent Guide
 
-Use this guide when an agent is asked to create the best Nothing Ear EQ QR for a genre, artist, mood, or listening goal.
+Use this guide when you (an AI Agent) are asked to create the best Nothing Ear EQ QR for a genre, artist, mood, or listening goal.
 
-## Required behavior
+## The Auto-Design Workflow (Preferred)
 
-- Behave as an audio engineer, not a random preset generator.
-- Ask for clarification only when it materially changes the profile: genre, artist, device model, bass preference, vocal priority, fatigue sensitivity.
-- Design the profile first, then map it to the valid Nothing X bands.
-- Prefer the expert designer (`npm run design`) when the requested genre exists in `profiles/genre-rules/`.
-- Run or assume `npm run import:autoeq` has populated AutoEq data before claiming measurement-backed confidence.
-- Validate before generating.
-- Tell the user Bass Enhance separately because it is not encoded in the QR.
-- Show the generated PNG in chat when the user wants to import from mobile.
-
-## Design checklist
-
-1. Identify the musical target:
-   - sub-bass and kick;
-   - bass body;
-   - low-mid mud;
-   - vocal presence;
-   - attack and consonants;
-   - brightness and air.
-2. Choose moderate gain values. Prefer clarity from small cuts plus modest boosts.
-3. Keep treble controlled. Nothing Ear devices can become sharp if 4-10 kHz is over-boosted.
-4. Keep every band in range:
-   - 1: 20-100 Hz
-   - 2: 100-200 Hz
-   - 3: 200-400 Hz
-   - 4: 400-1000 Hz
-   - 5: 1000-3000 Hz
-   - 6: 3000-6000 Hz
-   - 7: 6000-12000 Hz
-   - 8: 12000-20000 Hz
-5. Run `npm run validate`.
-6. Run `npm run generate`.
-
-## Expert designer command
-
-For new optimized profiles, use:
+You do NOT need to manually translate a user's natural language request into strict CLI arguments. Use the `design:auto` script which includes a built-in Natural Language Parsing layer:
 
 ```powershell
-npm run design -- --device=<device-id> --genre=<genre-id-or-alias> --context=<context> --target=<target-or-auto> --bass=<level> --vocal=<level> --treble=<level> --energy=<level> --warmth=<level> --name="<short name>"
+npm run design:auto -- --device=nothing-ear-a --prompt="quiero reggaeton con muchos bajos para el gym" --json
 ```
 
-Levels accept `-1`, `0`, `1`, `2` or words such as `low`, `balanced`, `high`, `club`.
+The script will automatically infer the genre, context, and taste levels and return a structured JSON response.
 
-Known device ids:
+## Explicit Design Workflow
 
-- `nothing-ear-2024`
-- `nothing-ear-a`
-- `nothing-ear-2`
-- `nothing-ear-3`
-- `generic-nothing-x`
+If you prefer full control, use the explicit designer:
 
-Known genres are stored in `profiles/genre-rules/`.
+```powershell
+npm run design -- --device=<device-id> --genre=<genre-id-or-alias> --context=<context> --target=<target-or-auto> --bass=<level> --vocal=<level> --treble=<level> --energy=<level> --warmth=<level> --name="<short name>" --json
+```
 
-Known targets are stored in `targets/`: `natural`, `vocal-clarity`, `club-bass`, `low-volume`, `soft-treble`.
+### Available Genres (14)
+`reggaeton`, `pop`, `hip-hop`, `electronic-club`, `rock`, `metal`, `r-and-b`, `latin-pop`, `kpop`, `jazz`, `flamenco`, `lofi-chill`, `piano-acoustic`, `video-voice`.
 
-## Required final response
+### Available Devices (6)
+- `nothing-ear-2024` (High confidence, AutoEQ B&K 5128)
+- `nothing-ear-a` (High confidence, AutoEQ B&K 5128)
+- `nothing-ear-2` (High confidence, AutoEQ HMS II.3)
+- `nothing-ear-1` (Medium-High confidence, AutoEQ HMS II.3)
+- `nothing-ear-3` (Low confidence heuristic fallback)
+- `generic-nothing-x` (Low confidence fallback)
+
+## Interpreting the Output
+
+When you run the designer with `--json`, you receive a manifest. 
+
+**Pay special attention to `riskReport.risks`**:
+The engine will detect acoustic problems (e.g., "Air band is high") and **Preference Conflicts** (e.g., "Bass and vocal are both maximized"). If you see conflicts, communicate them to the user.
+
+## Required final response to the User
 
 When delivering a generated profile to a user, include:
-
-- QR image or path to the clean PNG;
-- final 8-band table;
-- Bass Enhance recommendation;
-- AutoEq source used or heuristic fallback;
-- target used;
-- confidence level;
-- short explanation and risk report.
-
-## Common mappings
-
-- More lyric clarity: raise band 5 first, then band 6 gently.
-- More bass weight: raise band 1 and band 2, then cut band 3 if it gets muddy.
-- More club energy: add bands 1, 2, 6, and 7, but keep vocals present.
-- Less fatigue: reduce bands 6 and 7 before reducing band 5.
-- More natural piano/acoustic: small moves only, no Bass Enhance, gentle air in band 8.
+- The **QR image embedded** so the user can scan it directly from the chat.
+- The 8-band table.
+- **Bass Enhance recommendation** (found in the JSON; remember this is NOT encoded in the QR!).
+- Confidence level and Risk Report summary.

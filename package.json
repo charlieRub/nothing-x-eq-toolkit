@@ -6,6 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "design": "node scripts/design-profile.js",
+    "design:auto": "node scripts/design-auto.js",
     "design:examples": "node scripts/design-examples.js",
     "design:reggaeton": "node scripts/design-profile.js --device=nothing-ear-2024 --genre=reggaeton --context=gym --target=club-bass --bass=1 --vocal=1 --treble=0 --energy=1 --warmth=0 --name=\"Reggaeton Expert\" --out=output/designed-reggaeton",
     "generate": "node scripts/generate-qrs.js",
