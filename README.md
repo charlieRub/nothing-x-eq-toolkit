@@ -17,6 +17,10 @@ This repository is architected to be operated primarily by **AI Agents** (such a
 
 The repository includes a designated skill definition (`skills/nothing-ear-eq-expert/SKILL.md`) that instructs an AI agent on how to function as a specialized audio engineer. By interpreting this repository, the agent learns the technical constraints of the Nothing X app and can autonomously generate valid QR codes based on natural language requests.
 
+<div align="center">
+  <img src="assets/workflow-diagram.png" alt="Agent-First Workflow Diagram" width="100%">
+</div>
+
 ### Usage Instructions
 
 1. **Initialize**: Open this repository in an Agent-enabled IDE or provide the repository files to your preferred AI assistant.
