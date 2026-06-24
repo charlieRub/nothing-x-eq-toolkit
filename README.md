@@ -1,6 +1,9 @@
-# Nothing Ear EQ QR Profiles
-
-Generate importable Nothing X advanced EQ QR codes for Nothing Ear devices.
+<div align="center">
+  <img src="assets/banner.png" alt="Nothing X EQ Toolkit Banner" width="100%">
+  <br/>
+  <h1>Nothing Ear EQ QR Profiles</h1>
+  <p>Generate importable Nothing X advanced EQ QR codes for Nothing Ear devices.</p>
+</div>
 
 This repository contains:
 
@@ -27,6 +30,12 @@ qr/
 ```
 
 Use the clean PNG files from that folder to import profiles in the Nothing X app.
+
+### Example Profile
+
+<div align="center">
+  <img src="qr/reggaeton-base-protagonista.png" alt="Reggaeton Example EQ Profile" width="300">
+</div>
 
 ## Expert Designer
 
