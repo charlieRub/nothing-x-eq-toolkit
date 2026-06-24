@@ -15,6 +15,11 @@ function roundGain(value) {
   return Math.round(value * 10) / 10;
 }
 
+/**
+ * Normalizes a string token by removing accents, lowercasing, and replacing non-alphanumeric chars with spaces.
+ * @param {string|number} value - The value to normalize.
+ * @returns {string} The normalized string.
+ */
 function normalizeToken(value) {
   return String(value || '')
     .normalize('NFD')
@@ -24,6 +29,13 @@ function normalizeToken(value) {
     .trim();
 }
 
+/**
+ * Parses a numeric level or descriptive word into a bounded level (-2 to 2).
+ * Supports natural language terms like 'low', 'balanced', 'high', 'club'.
+ * @param {string|number} value - The input value to parse.
+ * @param {number} [fallback=0] - The default value if parsing fails.
+ * @returns {number} The clamped level between -2 and 2.
+ */
 function parseLevel(value, fallback = 0) {
   if (value === undefined || value === null || value === '') return fallback;
   if (typeof value === 'number') return clamp(value, -2, 2);
@@ -193,6 +205,11 @@ function designBands(device, genre, target, preferences, autoEqResult) {
   return { bands, explanations };
 }
 
+/**
+ * Loads the core knowledge base (devices, genres, targets) from disk.
+ * @param {string} [baseDir=process.cwd()] - The repository root directory.
+ * @returns {Promise<{devices: Array<Object>, genres: Array<Object>, targets: Array<Object>}>} The loaded knowledge.
+ */
 async function loadKnowledge(baseDir = process.cwd()) {
   const devices = await loadJsonFiles(path.join(baseDir, 'devices'));
   const genres = await loadJsonFiles(path.join(baseDir, 'profiles', 'genre-rules'));
@@ -200,6 +217,22 @@ async function loadKnowledge(baseDir = process.cwd()) {
   return { devices, genres, targets };
 }
 
+/**
+ * Synthesizes an EQ profile based on hardware, genre, target, and user preferences.
+ * @param {Object} [options={}] - Design preferences.
+ * @param {string} [options.device] - Device ID or alias.
+ * @param {string} [options.genre] - Genre ID or alias.
+ * @param {string} [options.context] - Listening context (e.g. 'gym', 'home').
+ * @param {string} [options.target] - Target curve ID or alias.
+ * @param {number|string} [options.bass] - Bass preference level (-2 to 2).
+ * @param {number|string} [options.vocal] - Vocal clarity level (-2 to 2).
+ * @param {number|string} [options.treble] - Treble level (-2 to 2).
+ * @param {number|string} [options.energy] - Energy level (-2 to 2).
+ * @param {number|string} [options.warmth] - Warmth level (-2 to 2).
+ * @param {string} [options.name] - Custom name for the profile.
+ * @param {string} [baseDir=process.cwd()] - The repository root directory.
+ * @returns {Promise<Object>} The final validated profile object.
+ */
 async function designProfile(options = {}, baseDir = process.cwd()) {
   const { devices, genres, targets } = await loadKnowledge(baseDir);
   const device = matchByIdOrAlias(devices, options.device, DEFAULT_DEVICE);

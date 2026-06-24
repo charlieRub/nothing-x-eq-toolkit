@@ -1,6 +1,6 @@
-#!/usr/bin/env node
+const test = require('node:test');
 const assert = require('node:assert/strict');
-const { BAND_RANGES, validateProfile } = require('../src/nothing-x-eq');
+const { BAND_RANGES, validateProfile, ValidationError } = require('../src/nothing-x-eq');
 const { designProfile, parseLevel } = require('../src/profile-designer');
 const { loadAutoEqManifest, selectAutoEqSource, loadAutoEqBands } = require('../src/autoeq-adapter');
 
@@ -11,19 +11,24 @@ function assertBandsInRange(profile) {
   });
 }
 
-async function main() {
+test('parseLevel correctly normalizes inputs', () => {
   assert.equal(parseLevel('-1'), -1);
   assert.equal(parseLevel('+1'), 1);
   assert.equal(parseLevel('club'), 2);
   assert.equal(parseLevel('balanced'), 0);
+  assert.equal(parseLevel('bajo'), -1);
+});
 
+test('AutoEq Adapter loads correctly', async () => {
   const manifest = await loadAutoEqManifest();
   const source = selectAutoEqSource(manifest, 'nothing-ear-a', 'dhrme-nothing-ear-a');
   assert.equal(source.id, 'dhrme-nothing-ear-a');
   const autoEq = await loadAutoEqBands(source);
   assert.equal(autoEq.bands.length, 8);
   assert.ok(autoEq.bands.every((band) => typeof band.gain === 'number'));
+});
 
+test('Profile Designer generates valid profiles', async (t) => {
   const cases = [
     { device: 'nothing-ear-2024', genre: 'reggaeton', context: 'gym', target: 'club-bass', bass: 1, vocal: 1, energy: 1, name: 'Test Reggaeton', expectSource: true },
     { device: 'nothing-ear-2', genre: 'pop', target: 'soft-treble', vocal: 2, treble: -1, warmth: 1, name: 'Test Pop', expectSource: true },
@@ -33,22 +38,53 @@ async function main() {
   ];
 
   for (const options of cases) {
-    const profile = await designProfile(options);
-    validateProfile(profile);
-    assertBandsInRange(profile);
-    assert.equal(profile.preferences.bass, options.bass ?? 0);
-    assert.equal(profile.preferences.vocal, options.vocal ?? 0);
-    assert.ok(profile.confidence);
-    assert.ok(profile.sourceUsed);
-    assert.ok(profile.targetUsed);
-    assert.ok(profile.riskReport?.risks?.length);
-    if (options.expectSource) assert.notEqual(profile.sourceUsed, 'heuristic-device-profile');
+    await t.test(`Profile: ${options.name}`, async () => {
+      const profile = await designProfile(options);
+      validateProfile(profile);
+      assertBandsInRange(profile);
+      assert.equal(profile.preferences.bass, options.bass ?? 0);
+      assert.equal(profile.preferences.vocal, options.vocal ?? 0);
+      assert.ok(profile.confidence);
+      assert.ok(profile.sourceUsed);
+      assert.ok(profile.targetUsed);
+      assert.ok(profile.riskReport?.risks?.length);
+      if (options.expectSource) assert.notEqual(profile.sourceUsed, 'heuristic-device-profile');
+    });
   }
+});
 
-  console.log(`Expert designer tests passed (${cases.length} profiles)`);
-}
+test('Validation throws ValidationError on boundary violations', () => {
+  const validProfile = {
+    name: 'Valid',
+    bands: [
+      { freq: 50, q: 1.0, gain: 0 },
+      { freq: 150, q: 1.0, gain: 0 },
+      { freq: 300, q: 1.0, gain: 0 },
+      { freq: 700, q: 1.0, gain: 0 },
+      { freq: 2000, q: 1.0, gain: 0 },
+      { freq: 4500, q: 1.0, gain: 0 },
+      { freq: 9000, q: 1.0, gain: 0 },
+      { freq: 15000, q: 1.0, gain: 0 }
+    ]
+  };
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
+  assert.doesNotThrow(() => validateProfile(validProfile));
+
+  // Test missing name
+  assert.throws(() => validateProfile({ ...validProfile, name: '' }), ValidationError);
+
+  // Test Q out of bounds
+  const badQ = JSON.parse(JSON.stringify(validProfile));
+  badQ.bands[0].q = 3.0; // max is 2.5
+  assert.throws(() => validateProfile(badQ), ValidationError);
+
+  // Test Gain out of bounds
+  const badGain = JSON.parse(JSON.stringify(validProfile));
+  badGain.bands[3].gain = 6.5; // max is 6
+  assert.throws(() => validateProfile(badGain), ValidationError);
+
+  // Test Long Name
+  const longName = JSON.parse(JSON.stringify(validProfile));
+  longName.name = 'A'.repeat(300); // max is 255 bytes
+  assert.throws(() => validateProfile(longName), ValidationError);
 });

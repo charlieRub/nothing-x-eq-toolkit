@@ -1,9 +1,12 @@
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const zlib = require('node:zlib');
+const util = require('node:util');
 const QRCode = require('qrcode');
 const jsQR = require('jsqr');
 const { Jimp } = require('jimp');
+
+const gzipAsync = util.promisify(zlib.gzip);
 
 const BAND_RANGES = [
   [20, 100],
@@ -27,6 +30,25 @@ const SAFE_ZONES = [
   [14500, 16000],
 ];
 
+const LIMITS = {
+  gain: { min: -6, max: 6 },
+  q: { min: 0.7, max: 2.5 },
+  nameLengthBytes: { max: 255, optimal: 36 }
+};
+
+class ValidationError extends Error {
+  constructor(message, errors = []) {
+    super(message);
+    this.name = 'ValidationError';
+    this.errors = errors;
+  }
+}
+
+/**
+ * Creates a URL-friendly slug from a string.
+ * @param {string} value The string to slugify
+ * @returns {string} The slugified string
+ */
 function slugify(value) {
   return String(value)
     .normalize('NFD')
@@ -37,10 +59,17 @@ function slugify(value) {
     .slice(0, 80);
 }
 
+/**
+ * Validates an EQ profile against Nothing X app constraints.
+ * @param {Object} profile - The profile object to validate.
+ * @param {string} profile.name - The display name of the profile.
+ * @param {Array<{freq: number, q: number, gain: number}>} profile.bands - The 8 EQ bands.
+ * @throws {ValidationError} If the profile violates any constraint.
+ */
 function validateProfile(profile) {
   const errors = [];
   if (!profile || typeof profile !== 'object') {
-    throw new Error('Profile must be an object');
+    throw new ValidationError('Profile must be an object', ['Profile is not an object']);
   }
   if (!profile.name || typeof profile.name !== 'string') {
     errors.push('Profile name is required');
@@ -61,25 +90,30 @@ function validateProfile(profile) {
       if (typeof band?.freq === 'number' && (band.freq < min || band.freq > max)) {
         errors.push(`${label}: frequency ${band.freq} Hz is outside ${min}-${max} Hz`);
       }
-      if (typeof band?.q === 'number' && (band.q < 0.7 || band.q > 2.5)) {
-        errors.push(`${label}: Q ${band.q} is outside safe range 0.7-2.5`);
+      if (typeof band?.q === 'number' && (band.q < LIMITS.q.min || band.q > LIMITS.q.max)) {
+        errors.push(`${label}: Q ${band.q} is outside safe range ${LIMITS.q.min}-${LIMITS.q.max}`);
       }
-      if (typeof band?.gain === 'number' && (band.gain < -6 || band.gain > 6)) {
-        errors.push(`${label}: gain ${band.gain} dB is outside Nothing X range -6 to +6 dB`);
+      if (typeof band?.gain === 'number' && (band.gain < LIMITS.gain.min || band.gain > LIMITS.gain.max)) {
+        errors.push(`${label}: gain ${band.gain} dB is outside Nothing X range ${LIMITS.gain.min} to +${LIMITS.gain.max} dB`);
       }
     });
   }
 
   const nameBytes = Buffer.byteLength(profile.name || '', 'utf8');
-  if (nameBytes > 255) errors.push('Profile name is too long for the QR payload');
-  if (nameBytes > 36) errors.push('Profile name should be short for QR reliability');
+  if (nameBytes > LIMITS.nameLengthBytes.max) errors.push('Profile name is too long for the QR payload');
+  if (nameBytes > LIMITS.nameLengthBytes.optimal) errors.push('Profile name should be short for QR reliability');
 
   if (errors.length) {
-    throw new Error(`${profile.name || 'Profile'} is not Nothing X compatible:\n- ${errors.join('\n- ')}`);
+    throw new ValidationError(`${profile.name || 'Profile'} is not Nothing X compatible:\n- ${errors.join('\n- ')}`, errors);
   }
 }
 
-function encodeProfile(profile) {
+/**
+ * Asynchronously encodes a validated profile into a Base64 GZIP string for the QR payload.
+ * @param {Object} profile - The validated EQ profile.
+ * @returns {Promise<string>} The Base64 encoded payload.
+ */
+async function encodeProfile(profile) {
   validateProfile(profile);
   const name = Buffer.from(profile.name, 'utf8');
   const data = Buffer.alloc(2 + 8 * 12 + 2 + name.length);
@@ -98,9 +132,15 @@ function encodeProfile(profile) {
   data[offset + 1] = name.length;
   name.copy(data, offset + 2);
 
-  return zlib.gzipSync(data).toString('base64');
+  const compressed = await gzipAsync(data);
+  return compressed.toString('base64');
 }
 
+/**
+ * Decodes a payload from a QR image file.
+ * @param {string} file - Path to the image file.
+ * @returns {Promise<string|undefined>} The decoded QR payload string.
+ */
 async function decodeQr(file) {
   const img = await Jimp.read(file);
   const { data, width, height } = img.bitmap;
@@ -108,8 +148,15 @@ async function decodeQr(file) {
   return decoded?.data;
 }
 
+/**
+ * Generates and writes QR code images (PNG, SVG) and payload text to disk.
+ * @param {Object} profile - The EQ profile to export.
+ * @param {string} outDir - Output directory path.
+ * @param {Object} [options={}] - QR generation options.
+ * @returns {Promise<Object>} Manifest object of the exported files.
+ */
 async function writeQr(profile, outDir, options = {}) {
-  const payload = encodeProfile(profile);
+  const payload = await encodeProfile(profile);
   const fileBase = profile.slug || slugify(profile.name);
   const pngPath = path.join(outDir, `${fileBase}.png`);
   const svgPath = path.join(outDir, `${fileBase}.svg`);
@@ -145,6 +192,11 @@ async function writeQr(profile, outDir, options = {}) {
   };
 }
 
+/**
+ * Loads and parses a JSON file containing an array of profiles.
+ * @param {string} file - Path to the JSON file.
+ * @returns {Promise<Array<Object>>} Array of parsed profiles.
+ */
 async function loadProfiles(file) {
   const raw = await fs.readFile(file, 'utf8');
   const parsed = JSON.parse(raw);
@@ -156,6 +208,8 @@ async function loadProfiles(file) {
 module.exports = {
   BAND_RANGES,
   SAFE_ZONES,
+  LIMITS,
+  ValidationError,
   slugify,
   validateProfile,
   encodeProfile,

@@ -56,7 +56,13 @@ async function main() {
         name: argValue('name', undefined),
       };
 
-  const outDir = argValue('out', path.join('output', 'designed'));
+  let rawOutDir = argValue('out', path.join('output', 'designed'));
+  const outDir = path.resolve(process.cwd(), rawOutDir);
+  if (!outDir.startsWith(process.cwd())) {
+    throw new Error('Output directory must be within the current working directory for security.');
+  }
+
+  const outputJson = process.argv.includes('--json');
   const profile = await designProfile(answers);
   const result = await writeQr(profile, outDir);
   const manifest = {
@@ -77,19 +83,23 @@ async function main() {
   await fs.writeFile(path.join(outDir, `${profile.slug}.json`), `${JSON.stringify(profile, null, 2)}\n`);
   await fs.writeFile(path.join(outDir, 'manifest.json'), `${JSON.stringify([manifest], null, 2)}\n`);
 
-  console.log(`Generated ${profile.name}`);
-  console.log(`Device: ${profile.device}`);
-  console.log(`Genre: ${profile.genre}`);
-  console.log(`Context: ${profile.context}`);
-  console.log(`Target: ${profile.targetUsed}`);
-  console.log(`Source: ${profile.sourceUsed}`);
-  console.log(`Confidence: ${profile.confidence}`);
-  console.log(`Bass Enhance: ${profile.bassEnhance}`);
-  console.log(`PNG: ${manifest.png}`);
-  console.log('Risk report:');
-  for (const risk of profile.riskReport.risks) console.log(`- ${risk}`);
-  console.log('Design notes:');
-  for (const note of profile.designNotes) console.log(`- ${note}`);
+  if (outputJson) {
+    console.log(JSON.stringify(manifest, null, 2));
+  } else {
+    console.log(`Generated ${profile.name}`);
+    console.log(`Device: ${profile.device}`);
+    console.log(`Genre: ${profile.genre}`);
+    console.log(`Context: ${profile.context}`);
+    console.log(`Target: ${profile.targetUsed}`);
+    console.log(`Source: ${profile.sourceUsed}`);
+    console.log(`Confidence: ${profile.confidence}`);
+    console.log(`Bass Enhance: ${profile.bassEnhance}`);
+    console.log(`PNG: ${manifest.png}`);
+    console.log('Risk report:');
+    for (const risk of profile.riskReport.risks) console.log(`- ${risk}`);
+    console.log('Design notes:');
+    for (const note of profile.designNotes) console.log(`- ${note}`);
+  }
 }
 
 main().catch((error) => {
